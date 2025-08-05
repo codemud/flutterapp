@@ -10,7 +10,6 @@ void main() {
 
   String phone = ''; // 手机号码的变量
   String password = ''; // 密码的变量
-  bool isPwdVisible = true; // 密码是否可见的变量
   runApp(
     MaterialApp(
       home: Scaffold(
@@ -71,38 +70,10 @@ void main() {
                   SizedBox(
                     height: 20, // 设置组件之间的间距
                   ),
-                  // 需要将这部分代码放入StatefulWidget中，否则变量变化不会自动刷新UI
-                  StatefulBuilder(
-                    builder: (context, setState) {
-                      return TextField(
-                        obscureText: isPwdVisible, // 是否隐藏文本（密码输入框）
-                        decoration: InputDecoration(
-                          hintText: '请输入密码',
-                          border: OutlineInputBorder(
-                            borderSide: BorderSide.none,
-                            borderRadius: BorderRadius.all(Radius.circular(10)),
-                          ),
-                          filled: true,
-                          fillColor: Color(0xfff0f0f0),
-                          prefixIcon: Icon(
-                            Icons.lock,
-                            color: Uiconstants.COLOR_PAGE_GREEN,
-                          ),
-                          suffixIcon: IconButton(
-                            icon: Icon(
-                              isPwdVisible
-                                  ? Icons.remove_red_eye_sharp
-                                  : Icons.visibility_off,
-                              color: Uiconstants.COLOR_PAGE_BLUE,
-                            ),
-                            onPressed: () {
-                              setState(() => isPwdVisible = !isPwdVisible);
-                            },
-                          ),
-                        ),
-                        onChanged: (value) => password = value,
-                      );
-                    },
+                  // 自定义密码状态组件
+                  PwdCustomer(
+                    onChanged: (value) => password = value,
+                    placeholder: '请输入密码',
                   ),
                   SizedBox(
                     height: 30, // 设置组件之间的间距
@@ -165,4 +136,50 @@ void main() {
       ),
     ),
   );
+}
+
+// 有状态组件
+class PwdCustomer extends StatefulWidget {
+  final ValueChanged<String> onChanged;
+  final String placeholder;
+
+  const PwdCustomer({
+    super.key,
+    required this.onChanged,
+    required this.placeholder,
+  });
+
+  @override
+  State<PwdCustomer> createState() => _PwdCustomerState();
+}
+
+class _PwdCustomerState extends State<PwdCustomer> {
+  bool isPwdVisible = true;
+
+  @override
+  Widget build(BuildContext context) {
+    return TextField(
+      obscureText: isPwdVisible, // 是否隐藏文本（密码输入框）
+      decoration: InputDecoration(
+        hintText: widget.placeholder,
+        border: OutlineInputBorder(
+          borderSide: BorderSide.none,
+          borderRadius: BorderRadius.all(Radius.circular(10)),
+        ),
+        filled: true,
+        fillColor: Color(0xfff0f0f0),
+        prefixIcon: Icon(Icons.lock, color: Uiconstants.COLOR_PAGE_GREEN),
+        suffixIcon: IconButton(
+          icon: Icon(
+            isPwdVisible ? Icons.remove_red_eye_sharp : Icons.visibility_off,
+            color: Uiconstants.COLOR_PAGE_BLUE,
+          ),
+          onPressed: () {
+            setState(() => isPwdVisible = !isPwdVisible);
+          },
+        ),
+      ),
+      onChanged: widget.onChanged,
+    );
+  }
 }
