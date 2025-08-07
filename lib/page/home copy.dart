@@ -18,6 +18,8 @@ class _HomePageState extends State<HomePage> {
       // 顶部状态栏
       appBar: AppBar(
         title: const Text('首页', style: TextStyle(color: Colors.white)),
+        automaticallyImplyLeading: false, // 是否显示返回图标（即标题左侧的）
+        leading: Icon(Icons.home, color: Colors.white), // 自定义返回图标
         // backgroundColor: Uiconstants.COLOR_PAGE_GREEN, // 这里不设置背景颜色，使用全局主题
       ),
       // 页面主体
